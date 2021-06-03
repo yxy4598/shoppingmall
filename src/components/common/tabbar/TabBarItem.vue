@@ -46,6 +46,7 @@
     font-size: 14px;
   }
   .tab-bar-item img {
+    margin-top: 4px;
     height: 24px;
     width: 24px;
   }
