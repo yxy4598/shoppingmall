@@ -3,12 +3,13 @@
     <nav-bar class="home-nav">
       <div slot="center">首页</div>
     </nav-bar>
+    <tab-control :titles="['流行', '新款', '精选']" @tabClick="tabClick" ref="tabControl" class="tab-control" v-show="isTabFixed"></tab-control>
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
-      <home-swiper :banners="banners"></home-swiper>
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
       
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
-      <tab-control class="tab-control" :titles="['流行', '新款', '精选']" @tabClick="tabClick"></tab-control>
+      <tab-control :titles="['流行', '新款', '精选']" @tabClick="tabClick" ref="tabControl"></tab-control>
       <goods-list :goods="goods[currentClick].list"></goods-list>
     </scroll>
     <!-- 通过v-on中的属性.native来监听原生组件的点击事件 -->
@@ -42,7 +43,9 @@
           'sell': {page: 0, list: []}
         },
         currentClick: 'pop',
-        isShowBackTop: false
+        isShowBackTop: false,
+        tabOffsetTop: 0,
+        isTabFixed: false
       }
     },
     components: {
@@ -68,6 +71,8 @@
       this.$bus.$on('itemImageLoad', () => {
         refresh();
       })
+
+      
     },
     methods: {
       /**
@@ -93,14 +98,21 @@
       },
       contentScroll(position) {
         // console.log((-position.y) > 1000);
-        this.isShowBackTop = (-position.y) > 1000
+        this.isShowBackTop = (-position.y) > 1000;
         // console.log(position);
+
+        //2.决定tabControl是否吸顶
+        this.isTabFixed = (-position.y) > this.tabOffsetTop;
       },
       loadMore() {
         // console.log('上拉加载');
         this.getHomeGoods(this.currentClick);
 
         this.$refs.scroll.finishPullUp();
+      },
+      swiperImageLoad() {
+        // console.log(this.$refs.tabControl.$el.offsetTop);
+        this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
       },
       /**
        * 网络请求的方法 
@@ -132,7 +144,7 @@
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    /* padding-top: 44px; */
     height: 100vh;
     /* position: relative; */
   }
@@ -141,16 +153,15 @@
     background-color: var(--color-tint);
     color: #fff;
 
-    position: fixed;
+    /* position: fixed;
     left: 0;
     right: 0;
     top: 0;
-    z-index: 1;
+    z-index: 1; */
   }
 
   .tab-control {
-    position: sticky;
-    top: 44px;
+    position: relative;
 
     z-index: 1;
   }
