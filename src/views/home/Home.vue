@@ -3,7 +3,7 @@
     <nav-bar class="home-nav">
       <div slot="center">首页</div>
     </nav-bar>
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
       <home-swiper :banners="banners"></home-swiper>
       
       <recommend-view :recommends="recommends"></recommend-view>
@@ -12,7 +12,7 @@
       <goods-list :goods="goods[currentClick].list"></goods-list>
     </scroll>
     <!-- 通过v-on中的属性.native来监听原生组件的点击事件 -->
-    <back-top @click.native="backClick"></back-top>
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -40,7 +40,8 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []}
         },
-        currentClick: 'pop'
+        currentClick: 'pop',
+        isShowBackTop: false
       }
     },
     components: {
@@ -81,6 +82,11 @@
         this.$refs.scroll.scrollTo(0, 0)
         // console.log("jianting");
       },
+      contentScroll(position) {
+        // console.log((-position.y) > 1000);
+        this.isShowBackTop = (-position.y) > 1000
+        // console.log(position);
+      },
 
       /**
        * 网络请求的方法 
@@ -114,7 +120,7 @@
   #home {
     padding-top: 44px;
     height: 100vh;
-    position: relative;
+    /* position: relative; */
   }
 
   .home-nav {
@@ -143,6 +149,10 @@
     bottom: 49px;
     left: 0;
     right: 0;
-
   }
+  /* .content {
+    height: calc(100% - 93px);
+    overflow: hidden;
+    margin-top: 44px;
+  } */
 </style>
