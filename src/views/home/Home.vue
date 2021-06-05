@@ -28,6 +28,7 @@
   import BackTop from 'components/content/backTop/BackTop'
 
   import {getHomeMultidata, getHomeGoods} from "network/home"
+  import {debounce} from "common/utils"
 
   export default {
     name: 'Home',
@@ -62,7 +63,7 @@
     },
     mounted() {
       // 防抖动操作
-      const refresh = this.debounce(this.$refs.scroll.refresh, 100)
+      const refresh = debounce(this.$refs.scroll.refresh, 100)
       // console.log(refresh);
       this.$bus.$on('itemImageLoad', () => {
         refresh();
@@ -100,17 +101,6 @@
         this.getHomeGoods(this.currentClick);
 
         this.$refs.scroll.finishPullUp();
-      },
-      //防抖动函数
-      debounce(fn, delay) {
-        let timer = null;
-        return function(...args) {
-
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            fn.apply(this, args)
-          }, delay);
-        };
       },
       /**
        * 网络请求的方法 
