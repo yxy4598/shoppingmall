@@ -1,24 +1,95 @@
 <template>
   <div id="category">
-    <nav-bar class="category-nav">
-      <div slot="center">分类</div>
-    </nav-bar>
+    <nav-bar class="nav-bar"><div slot="center">商品分类</div></nav-bar>
+    <div class="content">
+      <tab-menu :categories="categories"
+                @selectItem="selectItem"></tab-menu>
+    </div>
   </div>
 </template>
 
 <script>
   import NavBar from 'components/common/navbar/NavBar'
+
+  import TabMenu from './childComps/TabMenu'
+  import Scroll from 'components/common/scroll/Scroll'
+
+  import {getCategory, getSubcategory, getCategoryDetail} from "network/category";
+  import {POP, SELL, NEW} from "common/const";
+  import {tabControlMixin} from "common/mixin";
+
   export default {
-    name: 'Category',
+		name: "Category",
     components: {
-      NavBar
+		  NavBar,
+      TabMenu,
+    },
+    mixins: [tabControlMixin],
+    data() {
+		  return {
+		    categories: [],
+        categoryData: {
+        },
+        currentIndex: -1
+      }
+    },
+    created() {
+      this._getCategory()
+    },
+    methods: {
+		  _getCategory() {
+		    getCategory().then(res => {
+		      this.categories = res.data.data.category.list
+          for (let i = 0; i < this.categories.length; i++) {
+            this.categoryData[i] = {
+              subcategories: {},
+              categoryDetail: {
+                'pop': [],
+                'new': [],
+                'sell': []
+              }
+            }
+          }
+
+          this._getSubcategories(0)
+        })
+      },
+      _getSubcategories(index) {
+        this.currentIndex = index;
+		    const mailKey = this.categories[index].maitKey;
+        getSubcategory(mailKey).then(res => {
+          this.categoryData[index].subcategories = res.data.data
+          this.categoryData = {...this.categoryData}
+          this._getCategoryDetail(POP)
+          this._getCategoryDetail(SELL)
+          this._getCategoryDetail(NEW)
+        })
+      },
+      _getCategoryDetail(type) {
+        const miniWallkey = this.categories[this.currentIndex].miniWallkey;
+		    getCategoryDetail(miniWallkey, type).then(res => {
+		      this.categoryData[this.currentIndex].categoryDetail[type] = res
+          this.categoryData = {...this.categoryData}
+        })
+      },
+      /**
+       * 事件响应相关的方法
+       */
+      selectItem(index) {
+        this._getSubcategories(index)
+      }
     }
-  }
+	}
 </script>
 
 <style scoped>
-  .category-nav {
+  #category {
+    height: 100vh;
+  }
+
+  .nav-bar {
     background-color: var(--color-tint);
+    font-weight: 700;
     color: #fff;
   }
 </style>
