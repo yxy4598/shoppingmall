@@ -3,7 +3,7 @@
     <nav-bar class="home-nav">
       <div slot="center">首页</div>
     </nav-bar>
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banners="banners"></home-swiper>
       
       <recommend-view :recommends="recommends"></recommend-view>
@@ -58,7 +58,10 @@
       this.getHomeMultidata(),
       this.getHomeGoods('pop'),
       this.getHomeGoods('new'),
-      this.getHomeGoods('sell')
+      this.getHomeGoods('sell'),
+      this.$bus.$on('itemImageLoad', () => {
+        this.$refs.scroll.refresh();
+      })
     },
     methods: {
       /**
@@ -86,6 +89,12 @@
         // console.log((-position.y) > 1000);
         this.isShowBackTop = (-position.y) > 1000
         // console.log(position);
+      },
+      loadMore() {
+        // console.log('上拉加载');
+        this.getHomeGoods(this.currentClick);
+
+        this.$refs.scroll.finishPullUp();
       },
 
       /**
