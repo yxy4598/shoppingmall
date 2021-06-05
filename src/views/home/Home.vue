@@ -58,9 +58,14 @@
       this.getHomeMultidata(),
       this.getHomeGoods('pop'),
       this.getHomeGoods('new'),
-      this.getHomeGoods('sell'),
+      this.getHomeGoods('sell')
+    },
+    mounted() {
+      // 防抖动操作
+      const refresh = this.debounce(this.$refs.scroll.refresh, 100)
+      // console.log(refresh);
       this.$bus.$on('itemImageLoad', () => {
-        this.$refs.scroll.refresh();
+        refresh();
       })
     },
     methods: {
@@ -96,7 +101,17 @@
 
         this.$refs.scroll.finishPullUp();
       },
+      //防抖动函数
+      debounce(fn, delay) {
+        let timer = null;
+        return function(...args) {
 
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            fn.apply(this, args)
+          }, delay);
+        };
+      },
       /**
        * 网络请求的方法 
        */
