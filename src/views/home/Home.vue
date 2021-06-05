@@ -3,7 +3,7 @@
     <nav-bar class="home-nav">
       <div slot="center">首页</div>
     </nav-bar>
-    <scroll class="content">
+    <scroll class="content" ref="scroll">
       <home-swiper :banners="banners"></home-swiper>
       
       <recommend-view :recommends="recommends"></recommend-view>
@@ -11,12 +11,8 @@
       <tab-control class="tab-control" :titles="['流行', '新款', '精选']" @tabClick="tabClick"></tab-control>
       <goods-list :goods="goods[currentClick].list"></goods-list>
     </scroll>
-    <!-- <home-swiper :banners="banners"></home-swiper>
-      
-      <recommend-view :recommends="recommends"></recommend-view>
-      <feature-view></feature-view>
-      <tab-control class="tab-control" :titles="['流行', '新款', '精选']" @tabClick="tabClick"></tab-control>
-      <goods-list :goods="goods[currentClick].list"></goods-list> -->
+    <!-- 通过v-on中的属性.native来监听原生组件的点击事件 -->
+    <back-top @click.native="backClick"></back-top>
   </div>
 </template>
 
@@ -29,6 +25,7 @@
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
   import Scroll from 'components/common/scroll/Scroll'
+  import BackTop from 'components/content/backTop/BackTop'
 
   import {getHomeMultidata, getHomeGoods} from "network/home"
 
@@ -53,7 +50,8 @@
       FeatureView,
       TabControl,
       GoodsList,
-      Scroll
+      Scroll,
+      BackTop
     },
     created() {
       this.getHomeMultidata(),
@@ -78,6 +76,10 @@
             break;
         }
         // console.log(index);
+      },
+      backClick() {
+        this.$refs.scroll.scrollTo(0, 0)
+        // console.log("jianting");
       },
 
       /**
