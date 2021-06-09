@@ -12,7 +12,6 @@
   import NavBar from 'components/common/navbar/NavBar'
 
   import TabMenu from './childComps/TabMenu'
-  import Scroll from 'components/common/scroll/Scroll'
 
   import {getCategory, getSubcategory, getCategoryDetail} from "network/category";
   import {POP, SELL, NEW} from "common/const";
@@ -22,7 +21,7 @@
 		name: "Category",
     components: {
 		  NavBar,
-      TabMenu,
+      TabMenu
     },
     mixins: [tabControlMixin],
     data() {
@@ -91,5 +90,13 @@
     background-color: var(--color-tint);
     font-weight: 700;
     color: #fff;
+  }
+  .content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    bottom: 49px;
+
   }
 </style>
