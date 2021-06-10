@@ -14,12 +14,12 @@ export function request(config) {
       console.log(err);
     })
   
-    instance.interceptors.response.use(res => {
+    // instance.interceptors.response.use(res => {
       
-      return res
-    }, err => {
-      console.log(err);
-    })
+    //   return res
+    // }, err => {
+    //   console.log(err);
+    // })
 
     instance(config)
       .then(res => {

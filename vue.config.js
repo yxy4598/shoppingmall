@@ -11,5 +11,12 @@ module.exports = {
         'views': '@/views'
       }
     }
+  },
+  devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
+    hotOnly: false,
+    disableHostCheck: true
   }
 }
