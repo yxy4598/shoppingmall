@@ -34,7 +34,7 @@
         this.curryIndex = index;
       },
       backClick() {
-        this.$router.back();
+        this.$router.go(-1);
       }
     }
   }
