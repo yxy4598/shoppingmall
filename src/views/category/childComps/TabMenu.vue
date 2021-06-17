@@ -1,5 +1,5 @@
 <template>
-  <scroll id="tab-menu">
+  <scroll id="tab-menu" :pull-up-load="true">
     <div class="menu-list">
       <div class="menu-list-item"
            :class="{active: index===currentIndex}"
